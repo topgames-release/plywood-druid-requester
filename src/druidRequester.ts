@@ -36,11 +36,17 @@ export interface DruidRequestDecorator {
   (decoratorRequest: DecoratorRequest, decoratorContext: { [k: string]: any }): Decoration | Promise<Decoration>;
 }
 
+export interface CustomUserAgent {
+  uid: string;
+  hash: string;
+}
+
 export interface DruidRequesterParameters {
   locator?: PlywoodLocator;
   host?: string;
   timeout?: number;
   protocol?: Protocol;
+  userAgent?: CustomUserAgent;
   ca?: string;
   cert?: any;
   key?: any;
@@ -334,6 +340,11 @@ export function druidRequesterFactory(parameters: DruidRequesterParameters): Ply
           query.context.timeout = timeout;
         }
 
+        let userAgent: CustomUserAgent = { uid: 'undefined', hash: 'undefined' }
+        if (parameters.userAgent) {
+          userAgent = parameters.userAgent;
+        }
+
         requestOptionsWithDecoration({
           query,
           context,
@@ -342,7 +353,8 @@ export function druidRequesterFactory(parameters: DruidRequesterParameters): Ply
             url: url + "/druid/v2/" + (queryType === 'sql' ? 'sql/' : '') + (context['pretty'] ? '?pretty': ''),
             body: JSON.stringify(query),
             headers: {
-              "Content-type": "application/json"
+              "Content-type": "application/json",
+              "User-Agent": JSON.stringify(userAgent)
             },
             timeout: timeout
           }

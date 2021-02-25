@@ -1,19 +1,19 @@
 {
-  "name": "plywood-druid-requester",
-  "version": "2.6.1",
+  "name": "@topgames/plywood-druid-requester",
+  "version": "2.6.1-alpha.0",
   "description": "Druid requester for Plywood (within node)",
   "keywords": [
     "druid",
     "requester"
   ],
   "author": {
-    "name": "Vadim Ogievetsky",
-    "url": "http://vadim.ogievetsky.com"
+    "name": "Ying Wang",
+    "url": "http://upcwangying.com"
   },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "http://github.com/implydata/plywood-druid-requester.git"
+    "url": "http://github.com/topgames-release/plywood-druid-requester.git"
   },
   "main": "build/druidRequester.js",
   "typings": "build/druidRequester.d.ts",
