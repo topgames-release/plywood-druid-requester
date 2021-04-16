@@ -36,17 +36,11 @@ export interface DruidRequestDecorator {
   (decoratorRequest: DecoratorRequest, decoratorContext: { [k: string]: any }): Decoration | Promise<Decoration>;
 }
 
-export interface CustomUserAgent {
-  uid: string;
-  hash: string;
-}
-
 export interface DruidRequesterParameters {
   locator?: PlywoodLocator;
   host?: string;
   timeout?: number;
   protocol?: Protocol;
-  userAgent?: CustomUserAgent;
   ca?: string;
   cert?: any;
   key?: any;
@@ -340,21 +334,20 @@ export function druidRequesterFactory(parameters: DruidRequesterParameters): Ply
           query.context.timeout = timeout;
         }
 
-        let userAgent: CustomUserAgent = { uid: 'undefined', hash: 'undefined' }
-        if (parameters.userAgent) {
-          userAgent = parameters.userAgent;
+        const prefixUidQuery = context.uid ? ('?uid=' + context.uid) : ""
+        let prefixPath = "/druid/v2"
+        if ((queryType === 'sql' ? 'sql/' : '') || (context['pretty'] ? '?pretty': '')) {
+          prefixPath = "/druid/v2/"
         }
-
         requestOptionsWithDecoration({
           query,
           context,
           options: {
             method: "POST",
-            url: url + "/druid/v2/" + (queryType === 'sql' ? 'sql/' : '') + (context['pretty'] ? '?pretty': ''),
+            url: url + prefixPath + (queryType === 'sql' ? 'sql/' : '') + (context['pretty'] ? '?pretty': '') + prefixUidQuery,
             body: JSON.stringify(query),
             headers: {
-              "Content-type": "application/json",
-              "User-Agent": JSON.stringify(userAgent)
+              "Content-type": "application/json"
             },
             timeout: timeout
           }
